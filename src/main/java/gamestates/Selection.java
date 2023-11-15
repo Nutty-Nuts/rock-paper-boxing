@@ -159,6 +159,7 @@ public class Selection extends State implements StateMethods {
                 continue;
             }
             System.out.println("released");
+
             if (button.getTag().equals("P1")) {
                 switch (button.getTitle()) {
                     case "NEXT" -> choice1++;

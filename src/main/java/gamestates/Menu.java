@@ -2,33 +2,44 @@ package gamestates;
 
 import main.Game;
 import ui.Buttons;
+import ui.MenuButtons;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import utils.Constants.WINDOW;
+
 public class Menu extends State implements StateMethods {
-    private Buttons buttons[] = new Buttons[1];
+    private MenuButtons menuButtons[];
 
     public Menu(Game game) {
         super(game);
-        loadButtons();
+
+        initButtons();
     }
 
-    public void loadButtons() {
-        buttons[0] = new Buttons(100, 100, GameStates.SELECTION);
+    public void initButtons() {
+        this.menuButtons = new MenuButtons[3];
+
+        menuButtons[0] = new MenuButtons(WINDOW.SCALE_WIDTH / 2, 100, "PLAY", "PLAY",
+                GameStates.SELECTION);
+        menuButtons[1] = new MenuButtons(WINDOW.SCALE_WIDTH / 2, 174, "INFO", "INFO",
+                GameStates.INFO);
+        menuButtons[2] = new MenuButtons(WINDOW.SCALE_WIDTH / 2, 248, "QUIT", "QUIT",
+                GameStates.QUIT);
     }
 
     @Override
     public void update() {
-        for (Buttons button : buttons) {
+        for (MenuButtons button : menuButtons) {
             button.update();
         }
     }
 
     @Override
     public void draw(Graphics graphics) {
-        for (Buttons button : buttons) {
+        for (MenuButtons button : menuButtons) {
             button.draw(graphics);
         }
 
@@ -60,7 +71,7 @@ public class Menu extends State implements StateMethods {
 
     @Override
     public void mousePressed(MouseEvent event) {
-        for (Buttons button : buttons) {
+        for (MenuButtons button : menuButtons) {
             if (isIn(event, button)) {
                 button.setMousePressed(true);
             }
@@ -69,20 +80,26 @@ public class Menu extends State implements StateMethods {
 
     @Override
     public void mouseReleased(MouseEvent event) {
-        for (Buttons button : buttons) {
-            if (isIn(event, button)) {
-                if (button.isMousePressed()) {
-                    System.out.println("Button pressed");
-                    button.applyState();
-                }
-                break;
+        for (MenuButtons button : menuButtons) {
+            if (!isIn(event, button)) {
+                continue;
             }
+            if (!button.isMousePressed()) {
+                continue;
+            }
+
+            switch (button.getTag()) {
+                case "PLAY" -> button.applyState();
+                case "INFO" -> button.applyState();
+                case "QUIT" -> button.applyState();
+            }
+            break;
         }
         resetButtons();
     }
 
     public void resetButtons() {
-        for (Buttons button : buttons) {
+        for (MenuButtons button : menuButtons) {
             button.reset();
         }
     }
