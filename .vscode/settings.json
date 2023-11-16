@@ -1,3 +1,4 @@
 {
-    "cSpell.words": ["TICKRATE"]
+    "cSpell.words": ["TICKRATE"],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

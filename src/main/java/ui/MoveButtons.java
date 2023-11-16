@@ -2,24 +2,14 @@ package ui;
 
 import java.awt.*;
 import java.awt.Rectangle;
-
-import gamestates.GameStates;
 import utils.Helpers;
 
-public class MenuButtons extends ButtonAbstract {
-    private GameStates state;
+public class MoveButtons extends ButtonAbstract {
     private String title;
 
-    public MenuButtons(int x, int y, String title, String tag, GameStates state) {
+    public MoveButtons(int x, int y, String title, String tag) {
         super(x, y, 196, 64, tag);
-        this.state = state;
         this.title = title;
-
-        initBoundary();
-    }
-
-    private void initBoundary() {
-        x = x - (width / 2);
         boundary = new Rectangle(x, y, width, height);
     }
 
@@ -37,34 +27,34 @@ public class MenuButtons extends ButtonAbstract {
         Helpers.drawCenteredString(graphics, title, boundary, new Font("Sanserif", Font.BOLD, 16), 0);
     }
 
-    public void applyState() {
-        GameStates.gameState = state;
-    }
-
     @Override
     public Rectangle getBoundary() {
+        // TODO Auto-generated method stub
         return boundary;
     }
 
     @Override
     public String getTag() {
+        // TODO Auto-generated method stub
         return tag;
     }
 
     @Override
     public boolean isMouseOver() {
+        // TODO Auto-generated method stub
         return mouseOver;
     }
 
     @Override
     public boolean isMousePressed() {
+        // TODO Auto-generated method stub
         return mousePressed;
     }
 
     @Override
     public void reset() {
         mouseOver = false;
-        mousePressed = false;
+        mouseOver = false;
     }
 
     @Override

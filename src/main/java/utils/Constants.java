@@ -25,5 +25,6 @@ public class Constants {
         public static int[] GERARDE = { 3, 1, 1, 15 };
         public static int[] DEB = { 2, 2, 2, 12 };
         public static int[][] CHARACTERS = { CATHYLUS, LOREI, GERARDE, DEB };
+        public static String[] CHARACTER_NAME = { "Cathylus", "Lorei", "Gerarde", "Deb" };
     }
 }

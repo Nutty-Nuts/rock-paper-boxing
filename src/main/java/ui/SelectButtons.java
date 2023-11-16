@@ -7,18 +7,12 @@ import utils.Helpers;
 /**
  * SelectButtons
  */
-public class SelectButtons extends Button {
+public class SelectButtons extends ButtonAbstract {
     private String title;
 
     public SelectButtons(int x, int y, String title, String tag) {
+        super(x, y, 64, 32, tag);
         this.title = title;
-
-        super.x = x;
-        super.y = y;
-        super.tag = tag;
-
-        super.width = 64;
-        super.height = 32;
 
         initBoundary();
     }

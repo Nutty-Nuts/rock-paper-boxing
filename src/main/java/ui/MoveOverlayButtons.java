@@ -3,24 +3,19 @@ package ui;
 import java.awt.*;
 import java.awt.Rectangle;
 
-import gamestates.GameStates;
 import utils.Helpers;
+import utils.Constants.WINDOW;
 
-public class MenuButtons extends ButtonAbstract {
-    private GameStates state;
+public class MoveOverlayButtons extends ButtonAbstract {
+    private int move;
     private String title;
+    private Rectangle boundary;
 
-    public MenuButtons(int x, int y, String title, String tag, GameStates state) {
-        super(x, y, 196, 64, tag);
-        this.state = state;
+    public MoveOverlayButtons(int x, int y, String title, String tag, int move) {
+        super(x, (y - 64 / 2), 64, 64, tag);
         this.title = title;
-
-        initBoundary();
-    }
-
-    private void initBoundary() {
-        x = x - (width / 2);
-        boundary = new Rectangle(x, y, width, height);
+        this.move = move;
+        this.boundary = new Rectangle(x, y - 64 / 2, 64, 64);
     }
 
     @Override
@@ -37,8 +32,8 @@ public class MenuButtons extends ButtonAbstract {
         Helpers.drawCenteredString(graphics, title, boundary, new Font("Sanserif", Font.BOLD, 16), 0);
     }
 
-    public void applyState() {
-        GameStates.gameState = state;
+    public int getMove() {
+        return move;
     }
 
     @Override
@@ -62,12 +57,6 @@ public class MenuButtons extends ButtonAbstract {
     }
 
     @Override
-    public void reset() {
-        mouseOver = false;
-        mousePressed = false;
-    }
-
-    @Override
     public void setMouseOver(boolean value) {
         mouseOver = value;
     }
@@ -75,5 +64,11 @@ public class MenuButtons extends ButtonAbstract {
     @Override
     public void setMousePressed(boolean value) {
         mousePressed = value;
+    }
+
+    @Override
+    public void reset() {
+        mouseOver = false;
+        mousePressed = false;
     }
 }

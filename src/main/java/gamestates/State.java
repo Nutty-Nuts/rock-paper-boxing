@@ -4,8 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import main.Game;
-import ui.Buttons;
-import ui.Button;
+import ui.ButtonAbstract;
 
 public class State {
     protected Game game;
@@ -14,11 +13,7 @@ public class State {
         this.game = game;
     }
 
-    public boolean isIn(MouseEvent e, Buttons button) {
-        return button.getBounds().contains(e.getX(), e.getY());
-    }
-
-    public boolean isIn(MouseEvent e, Button button) {
+    public boolean isIn(MouseEvent e, ButtonAbstract button) {
         return button.getBoundary().contains(e.getX(), e.getY());
     }
 

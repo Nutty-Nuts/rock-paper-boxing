@@ -1,17 +1,34 @@
 package developer;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.*;
+import java.io.InputStream;
 
 import utils.Constants.WINDOW;
 
 public class BouncingSquare {
     private int x, y, xSpeed, ySpeed;
+    private BufferedImage image;
 
     public BouncingSquare(int x, int y, int xSpeed, int ySpeed) {
         this.x = x;
         this.y = y;
         this.xSpeed = (int) (xSpeed * WINDOW.SCALE);
         this.ySpeed = (int) (ySpeed * WINDOW.SCALE);
+        // String image = "dave.jpg";
+
+        InputStream inputStream = BouncingSquare.class.getResourceAsStream("/dave.jpg");
+        try {
+            image = ImageIO.read(inputStream);
+            // image = ImageIO.read(new File("src/main/java/res/dave.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void update() {
@@ -26,6 +43,8 @@ public class BouncingSquare {
     }
 
     public void render(Graphics graphics) {
-        graphics.fillRect(x, y, (int) (32 * WINDOW.SCALE), (int) (32 * WINDOW.SCALE));
+        // graphics.fillRect(x, y, (int) (32 * WINDOW.SCALE), (int) (32 *
+        // WINDOW.SCALE));
+        graphics.drawImage(image, x, y, 168, 177, null);
     }
 }

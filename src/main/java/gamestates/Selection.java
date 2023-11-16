@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 import main.Game;
 import ui.SelectButtons;
 import ui.StartButton;
-import ui.Button;
+import ui.ButtonAbstract;
 import utils.Constants.WINDOW;
 import utils.Constants.CHARACTER;
 import utils.Helpers;
@@ -56,7 +56,7 @@ public class Selection extends State implements StateMethods {
 
     @Override
     public void update() {
-        for (Button button : selectButtons) {
+        for (ButtonAbstract button : selectButtons) {
             button.update();
         }
         startButton.update();
@@ -94,7 +94,7 @@ public class Selection extends State implements StateMethods {
 
     @Override
     public void draw(Graphics graphics) {
-        for (Button button : selectButtons) {
+        for (ButtonAbstract button : selectButtons) {
             button.draw(graphics);
         }
         startButton.draw(graphics);
@@ -148,6 +148,7 @@ public class Selection extends State implements StateMethods {
         // TODO Auto-generated method stub
         if ((isIn(event, startButton))) {
             if ((startButton.isMousePressed())) {
+                playing.initPlayers(choice1, choice2);
                 startButton.applyState();
             }
         }

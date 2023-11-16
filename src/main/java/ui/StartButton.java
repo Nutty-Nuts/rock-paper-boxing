@@ -6,20 +6,14 @@ import java.awt.Rectangle;
 import gamestates.GameStates;
 import utils.Helpers;
 
-public class StartButton extends Button {
+public class StartButton extends ButtonAbstract {
     private GameStates state;
     private String title;
 
     public StartButton(int x, int y, String title, String tag, GameStates state) {
+        super(x, y, 196, 64, tag);
         this.state = state;
         this.title = title;
-
-        super.x = x;
-        super.y = y;
-        super.tag = tag;
-
-        super.width = 196;
-        super.height = 64;
 
         initBoundary();
     }
