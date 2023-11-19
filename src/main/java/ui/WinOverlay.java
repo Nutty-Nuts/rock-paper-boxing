@@ -1,7 +1,9 @@
 package ui;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
+import gamestates.GameStates;
 import gamestates.Playing;
 import utils.Constants.WINDOW;
 import utils.Loader.PIXELS;

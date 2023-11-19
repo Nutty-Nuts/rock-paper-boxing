@@ -1,5 +1,7 @@
 package utils;
 
+import java.awt.Font;
+
 public class Constants {
     public static class WINDOW {
         public static int WIDTH = 1280;
@@ -33,4 +35,10 @@ public class Constants {
         public static int[][] CHARACTERS = { CATHYLUS, LOREI, GERARDE, DEB };
         public static String[] CHARACTER_NAME = { "Cathylus", "Lorei", "Gerarde", "Deb" };
     }
+
+    public static class FONTS {
+        public static Font BIG = new Font("Sanserif", Font.BOLD, 32);
+        public static Font NORMAL = new Font("Sanserif", Font.BOLD, 20);
+    }
+
 }

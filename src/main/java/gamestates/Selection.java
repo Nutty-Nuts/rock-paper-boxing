@@ -6,16 +6,19 @@ import java.awt.event.*;
 import main.Game;
 import ui.*;
 import ui.Image;
-
+import utils.Helpers;
 import utils.Constants.*;
 import utils.Loader.*;
 
 public class Selection extends State implements StateMethods {
     private ImageButton[] selectButtons;
     private ImageButton startButton;
-    private String[] characterSources, characterNames;
+    private Rectangle characterName1, characterName2, characterStats1, characterStats2;
+
+    private String[] characterSources;
 
     private int[][] characterPixels;
+    private int[][] characters;
     private boolean choiceChanged1, choiceChanged2;
 
     private Image charImage1, charImage2, choose;
@@ -37,6 +40,7 @@ public class Selection extends State implements StateMethods {
 
         this.characterSources = new String[] { SOURCE.CATHYLUS, SOURCE.LOREI, SOURCE.GERARDE, SOURCE.DEB };
         this.characterPixels = new int[][] { PIXELS.CATHYLUS, PIXELS.LOREI, PIXELS.GERARDE, PIXELS.DEB };
+        this.characters = new int[][] { CHARACTER.CATHYLUS, CHARACTER.LOREI, CHARACTER.GERARDE, CHARACTER.DEB };
 
         initButtons();
         initClasses();
@@ -60,6 +64,12 @@ public class Selection extends State implements StateMethods {
     public void initClasses() {
         charImage1 = new Image(characterSources[choice1], 208, 372, characterPixels[choice1], 0.1f, true, true);
         charImage2 = new Image(characterSources[choice2], 1044, 372, characterPixels[choice2], 0.1f, true, true);
+
+        characterName1 = new Rectangle(128, 160, 164, 236);
+        characterName2 = new Rectangle(960, 160, 164, 236);
+
+        characterStats1 = new Rectangle(128, 380, 164, 236);
+        characterStats2 = new Rectangle(960, 380, 164, 236);
 
         choose = new Image(SOURCE.CHOOSE, WINDOW.SCALE_X_CENTER, 12, PIXELS.TITLE, 6, true);
     }
@@ -94,6 +104,20 @@ public class Selection extends State implements StateMethods {
         choose.draw(graphics);
 
         graphics.setColor(Color.black);
+
+        Helpers.drawCenteredString(graphics, CHARACTER.CHARACTER_NAME[choice1], characterName1, FONTS.BIG, 0);
+        Helpers.drawCenteredString(graphics, CHARACTER.CHARACTER_NAME[choice2], characterName2, FONTS.BIG, 0);
+
+        String stats1 = "R " + Integer.toString(characters[choice1][0]) + "    P "
+                + Integer.toString(characters[choice1][1])
+                + "    S " + Integer.toString(characters[choice1][2]) + "    HP "
+                + Integer.toString(characters[choice1][3]);
+        String stats2 = "R " + Integer.toString(characters[choice2][0]) + "    P "
+                + Integer.toString(characters[choice2][1])
+                + "    S " + Integer.toString(characters[choice2][2]) + "    HP "
+                + Integer.toString(characters[choice2][3]);
+        Helpers.drawCenteredString(graphics, stats1, characterStats1, FONTS.NORMAL, 0);
+        Helpers.drawCenteredString(graphics, stats2, characterStats2, FONTS.NORMAL, 0);
     }
 
     @Override

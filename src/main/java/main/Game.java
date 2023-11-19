@@ -5,10 +5,8 @@ import java.awt.*;
 import developer.BouncingSquare;
 import developer.FrameRateCounter;
 import developer.StateViewer;
-import gamestates.GameStates;
+import gamestates.*;
 import gamestates.Menu;
-import gamestates.Playing;
-import gamestates.Selection;
 import utils.Constants.GAME;
 
 public class Game implements Runnable {
@@ -18,6 +16,7 @@ public class Game implements Runnable {
     private Menu menu;
     private Playing playing;
     private Selection selection;
+    private Info info;
 
     private BouncingSquare square;
     private FrameRateCounter counter;
@@ -39,6 +38,7 @@ public class Game implements Runnable {
         this.menu = new Menu(this);
         this.playing = new Playing(this);
         this.selection = new Selection(this, playing);
+        this.info = new Info(this);
     }
 
     private void start() {
@@ -60,6 +60,9 @@ public class Game implements Runnable {
                 break;
             case PLAYING:
                 playing.update();
+                break;
+            case INFO:
+                info.update();
                 break;
             case QUIT:
                 System.exit(0);
@@ -83,6 +86,9 @@ public class Game implements Runnable {
                 break;
             case PLAYING:
                 playing.draw(graphics);
+                break;
+            case INFO:
+                info.draw(graphics);
                 break;
             default:
                 break;
@@ -146,5 +152,9 @@ public class Game implements Runnable {
 
     public Selection getSelection() {
         return selection;
+    }
+
+    public Info getInfo() {
+        return info;
     }
 }

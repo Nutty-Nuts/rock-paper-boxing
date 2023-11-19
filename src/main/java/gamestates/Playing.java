@@ -61,21 +61,20 @@ public class Playing extends State implements StateMethods {
     }
 
     public void initClasses() {
-        playerRect1 = new Rectangle((int) (64 * 1.5 * WINDOW.SCALE), (int) (256 * WINDOW.SCALE), 256, 32);
-        playerRect2 = new Rectangle(WINDOW.SCALE_WIDTH - (int) (64 * 5.5 * WINDOW.SCALE),
-                (int) (256 * WINDOW.SCALE), 256, 32);
+        // WINDOW.SCALE), 164, 236);
+        playerRect1 = new Rectangle(128, 160, 164, 236);
+        playerRect2 = new Rectangle(965, 160, 164, 236);
 
-        healthP1 = new Rectangle((int) (64 * 1.5 * WINDOW.SCALE), (int) (320 * WINDOW.SCALE), 256, 32);
-        healthP2 = new Rectangle(WINDOW.SCALE_WIDTH - (int) (64 * 5.5 * WINDOW.SCALE),
-                (int) (320 * WINDOW.SCALE), 256, 32);
+        healthP1 = new Rectangle(120, 380, 164, 236);
+        healthP2 = new Rectangle(960, 380, 164, 236);
 
         overlay1 = new MoveOverlay(this, player1);
         overlay2 = new MoveOverlay(this, player2);
 
         moveButtons = new ImageButton[2];
 
-        moveButtons[0] = new ImageButton(SOURCE.MOVE_BUTTON, 64 * 3 + 10, 480, PIXELS.GO_BUTTON, 2, "MOVEP1", true);
-        moveButtons[1] = new ImageButton(SOURCE.MOVE_BUTTON, WINDOW.SCALE_WIDTH - 64 * 4 + 20, 480, PIXELS.GO_BUTTON, 2,
+        moveButtons[0] = new ImageButton(SOURCE.MOVE_BUTTON, 64 * 3 + 10, 540, PIXELS.GO_BUTTON, 2, "MOVEP1", true);
+        moveButtons[1] = new ImageButton(SOURCE.MOVE_BUTTON, WINDOW.SCALE_WIDTH - 64 * 4 + 20, 540, PIXELS.GO_BUTTON, 2,
                 "MOVEP2", true);
 
         logic = new Logic(player1, player2, this);
@@ -111,16 +110,16 @@ public class Playing extends State implements StateMethods {
         graphics.setColor(Color.black);
         playerImage1.draw(graphics);
         playerImage2.draw(graphics);
-        Helpers.drawCenteredString(graphics, player1.getName(), playerRect1, new Font("Sanserif", Font.BOLD, 16),
+        Helpers.drawCenteredString(graphics, player1.getName(), playerRect1, FONTS.BIG,
                 0);
-        Helpers.drawCenteredString(graphics, player2.getName(), playerRect2, new Font("Sanserif", Font.BOLD, 16),
+        Helpers.drawCenteredString(graphics, player2.getName(), playerRect2, FONTS.BIG,
                 0);
-        Helpers.drawCenteredString(graphics, Integer.toString(player1.getHealth()),
+        Helpers.drawCenteredString(graphics, "HP " + Integer.toString(player1.getHealth()),
                 healthP1,
-                new Font("Sanserif", Font.BOLD, 16),
+                FONTS.NORMAL,
                 0);
-        Helpers.drawCenteredString(graphics, Integer.toString(player2.getHealth()), healthP2,
-                new Font("Sanserif", Font.BOLD, 16),
+        Helpers.drawCenteredString(graphics, "HP " + Integer.toString(player2.getHealth()), healthP2,
+                FONTS.NORMAL,
                 0);
 
         for (ImageButton buttons : moveButtons) {
@@ -157,8 +156,15 @@ public class Playing extends State implements StateMethods {
 
     @Override
     public void keyReleased(KeyEvent event) {
-        // TODO Auto-generated method stub
-
+        if (winP1 || winP2) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.VK_ESCAPE -> {
+                    System.out.println("key pressed");
+                    resetAll();
+                    GameStates.gameState = GameStates.MENU;
+                }
+            }
+        }
     }
 
     @Override
@@ -237,17 +243,23 @@ public class Playing extends State implements StateMethods {
         }
     }
 
-    public void resetButtons() {
+    private void resetButtons() {
         for (ImageButton button : moveButtons) {
             button.reset();
         }
         goButton.reset();
     }
 
-    public void resetRound() {
+    private void resetRound() {
         resetChoosing();
         hasP1Moved = false;
         hasP2Moved = false;
+    }
+
+    private void resetAll() {
+        resetRound();
+        winP1 = false;
+        winP2 = false;
     }
 
     public void setWinP1(boolean winP1) {
