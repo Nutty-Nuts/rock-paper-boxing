@@ -11,4 +11,8 @@ public class Helpers {
         graphics.setFont(font);
         graphics.drawString(text, x, y);
     }
+
+    public static int scale(float scale, int size) {
+        return (int) (scale * size);
+    }
 }

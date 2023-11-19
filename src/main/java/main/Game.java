@@ -1,14 +1,14 @@
 package main;
 
-import gamestates.GameStates;
-import gamestates.Menu;
-import gamestates.Playing;
-import gamestates.Selection;
 import java.awt.*;
 
 import developer.BouncingSquare;
 import developer.FrameRateCounter;
 import developer.StateViewer;
+import gamestates.GameStates;
+import gamestates.Menu;
+import gamestates.Playing;
+import gamestates.Selection;
 import utils.Constants.GAME;
 
 public class Game implements Runnable {

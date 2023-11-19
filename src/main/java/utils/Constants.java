@@ -6,8 +6,14 @@ public class Constants {
         public static int HEIGHT = 720;
         public static float SCALE = 1f;
 
+        public static int X_CENTER = WIDTH / 2;
+        public static int Y_CENTER = HEIGHT / 2;
+
         public static int SCALE_WIDTH = (int) (WIDTH * SCALE);
         public static int SCALE_HEIGHT = (int) (HEIGHT * SCALE);
+
+        public static int SCALE_X_CENTER = (int) (X_CENTER * SCALE);
+        public static int SCALE_Y_CENTER = (int) (Y_CENTER * SCALE);
     }
 
     public static class GAME {

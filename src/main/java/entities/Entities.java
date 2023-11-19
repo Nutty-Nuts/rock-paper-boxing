@@ -27,12 +27,4 @@ public abstract class Entities {
     abstract public int getHealth();
 
     abstract public String getName();
-
-    // abstract public void setHealth(int health);
-
-    // abstract public int getRockDmg();
-
-    // abstract public int getPaperDmg();
-
-    // abstract public int getScissorsDmg();
 }

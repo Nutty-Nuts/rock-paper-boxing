@@ -77,6 +77,7 @@
             <directory>src/main/res</directory>
             <includes>
                 <include>*.jpg</include>
+                <include>*.png</include>
             </includes>
         </resource>
     </resources>

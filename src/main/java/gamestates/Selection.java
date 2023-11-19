@@ -1,22 +1,25 @@
 package gamestates;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 import main.Game;
-import ui.SelectButtons;
-import ui.StartButton;
-import ui.ButtonAbstract;
-import utils.Constants.WINDOW;
-import utils.Constants.CHARACTER;
-import utils.Helpers;
+import ui.*;
+import ui.Image;
+
+import utils.Constants.*;
+import utils.Loader.*;
 
 public class Selection extends State implements StateMethods {
-    private SelectButtons[] selectButtons;
-    private StartButton startButton;
-    private String characterName1, characterName2;
-    private Rectangle characterRect1, characterRect2;
+    private ImageButton[] selectButtons;
+    private ImageButton startButton;
+    private String[] characterSources, characterNames;
+
+    private int[][] characterPixels;
+    private boolean choiceChanged1, choiceChanged2;
+
+    private Image charImage1, charImage2, choose;
+
     private Playing playing;
 
     private int choice1, choice2;
@@ -26,84 +29,71 @@ public class Selection extends State implements StateMethods {
 
         this.choice1 = 0;
         this.choice2 = 0;
+
+        this.choiceChanged1 = false;
+        this.choiceChanged2 = false;
+
         this.playing = playing;
+
+        this.characterSources = new String[] { SOURCE.CATHYLUS, SOURCE.LOREI, SOURCE.GERARDE, SOURCE.DEB };
+        this.characterPixels = new int[][] { PIXELS.CATHYLUS, PIXELS.LOREI, PIXELS.GERARDE, PIXELS.DEB };
 
         initButtons();
         initClasses();
     }
 
     public void initButtons() {
-        this.selectButtons = new SelectButtons[4];
+        this.selectButtons = new ImageButton[4];
 
-        selectButtons[0] = new SelectButtons((int) (64 * WINDOW.SCALE), (int) (256 * WINDOW.SCALE), "PREV", "P1");
-        selectButtons[1] = new SelectButtons((int) (64 * 5 * WINDOW.SCALE), (int) (256 * WINDOW.SCALE), "NEXT", "P1");
+        selectButtons[0] = new ImageButton(SOURCE.LEFT_ARROW_BUTTON, 64, 356, PIXELS.LEFT_ARROW_BUTTON, 3, "P1.PREV");
+        selectButtons[1] = new ImageButton(SOURCE.RIGHT_ARROW_BUTTON, 64 * 5, 356, PIXELS.LEFT_ARROW_BUTTON, 3,
+                "P1.NEXT");
+        selectButtons[2] = new ImageButton(SOURCE.LEFT_ARROW_BUTTON, WINDOW.SCALE_WIDTH - (64 * 6), 356,
+                PIXELS.LEFT_ARROW_BUTTON, 3, "P2.PREV");
+        selectButtons[3] = new ImageButton(SOURCE.RIGHT_ARROW_BUTTON, WINDOW.SCALE_WIDTH - (64 * 2), 356,
+                PIXELS.LEFT_ARROW_BUTTON, 3, "P2.NEXT");
 
-        selectButtons[2] = new SelectButtons(WINDOW.SCALE_WIDTH - (int) (64 * 6 *
-                WINDOW.SCALE),
-                (int) (256 * WINDOW.SCALE), "PREV", "P2");
-        selectButtons[3] = new SelectButtons(WINDOW.SCALE_WIDTH - (int) (64 * 2 *
-                WINDOW.SCALE),
-                (int) (256 * WINDOW.SCALE), "NEXT", "P2");
-
-        startButton = new StartButton((WINDOW.WIDTH / 2), WINDOW.HEIGHT - 128, "START", "START", GameStates.PLAYING);
+        startButton = new ImageButton(SOURCE.START_BUTTON, WINDOW.SCALE_X_CENTER, WINDOW.SCALE_HEIGHT - 128,
+                PIXELS.START_BUTTON, 3, "START", true);
     }
 
     public void initClasses() {
-        this.characterRect1 = new Rectangle((int) (64 * 1.5 * WINDOW.SCALE), (int) (256 * WINDOW.SCALE), 256, 32);
-        this.characterRect2 = new Rectangle(WINDOW.SCALE_WIDTH - (int) (64 * 5.5 * WINDOW.SCALE),
-                (int) (256 * WINDOW.SCALE), 256, 32);
+        charImage1 = new Image(characterSources[choice1], 208, 372, characterPixels[choice1], 0.1f, true, true);
+        charImage2 = new Image(characterSources[choice2], 1044, 372, characterPixels[choice2], 0.1f, true, true);
+
+        choose = new Image(SOURCE.CHOOSE, WINDOW.SCALE_X_CENTER, 12, PIXELS.TITLE, 6, true);
     }
 
     @Override
     public void update() {
-        for (ButtonAbstract button : selectButtons) {
+        for (ImageButton button : selectButtons) {
             button.update();
         }
         startButton.update();
 
-        switch (choice1) {
-            case 0:
-                characterName1 = "Cathylus";
-                break;
-            case 1:
-                characterName1 = "Lorei";
-                break;
-            case 2:
-                characterName1 = "Gerarde";
-                break;
-            case 3:
-                characterName1 = "Deb";
-                break;
+        if (choiceChanged1) {
+            charImage1.setImage(characterSources[choice1], characterPixels[choice1]);
+            choiceChanged1 = false;
         }
 
-        switch (choice2) {
-            case 0:
-                characterName2 = "Cathylus";
-                break;
-            case 1:
-                characterName2 = "Lorei";
-                break;
-            case 2:
-                characterName2 = "Gerarde";
-                break;
-            case 3:
-                characterName2 = "Deb";
-                break;
+        if (choiceChanged2) {
+            charImage2.setImage(characterSources[choice2], characterPixels[choice2]);
+            choiceChanged2 = false;
         }
     }
 
     @Override
     public void draw(Graphics graphics) {
-        for (ButtonAbstract button : selectButtons) {
+        for (ImageButton button : selectButtons) {
             button.draw(graphics);
         }
         startButton.draw(graphics);
 
+        charImage1.draw(graphics);
+        charImage2.draw(graphics);
+        choose.draw(graphics);
+
         graphics.setColor(Color.black);
-        Helpers.drawCenteredString(graphics, characterName1, characterRect1, new Font("Sanserif", Font.BOLD, 16),
-                0);
-        Helpers.drawCenteredString(graphics, characterName2, characterRect2, new Font("Sanserif", Font.BOLD, 16),
-                0);
     }
 
     @Override
@@ -132,7 +122,7 @@ public class Selection extends State implements StateMethods {
 
     @Override
     public void mousePressed(MouseEvent event) {
-        for (SelectButtons button : selectButtons) {
+        for (ImageButton button : selectButtons) {
             if (isIn(event, button)) {
                 button.setMousePressed(true);
                 System.out.println("pressed.");
@@ -149,10 +139,11 @@ public class Selection extends State implements StateMethods {
         if ((isIn(event, startButton))) {
             if ((startButton.isMousePressed())) {
                 playing.initPlayers(choice1, choice2);
-                startButton.applyState();
+                resetButtons();
+                GameStates.gameState = GameStates.PLAYING;
             }
         }
-        for (SelectButtons button : selectButtons) {
+        for (ImageButton button : selectButtons) {
             if (!(isIn(event, button))) {
                 continue;
             }
@@ -161,27 +152,34 @@ public class Selection extends State implements StateMethods {
             }
             System.out.println("released");
 
-            if (button.getTag().equals("P1")) {
-                switch (button.getTitle()) {
-                    case "NEXT" -> choice1++;
-                    case "PREV" -> choice1--;
+            switch (button.getTag()) {
+                case "P1.PREV" -> {
+                    choice1--;
+                    choiceChanged1 = true;
                 }
-                choice1 = wrapChoice(choice1, 0, CHARACTER.CHARACTERS.length - 1);
-            }
-            if (button.getTag().equals("P2")) {
-                switch (button.getTitle()) {
-                    case "NEXT" -> choice2++;
-                    case "PREV" -> choice2--;
+                case "P1.NEXT" -> {
+                    choice1++;
+                    choiceChanged1 = true;
                 }
-                choice2 = wrapChoice(choice2, 0, CHARACTER.CHARACTERS.length - 1);
+                case "P2.PREV" -> {
+                    choice2--;
+                    choiceChanged2 = true;
+                }
+                case "P2.NEXT" -> {
+                    choice2++;
+                    choiceChanged2 = true;
+                }
             }
+            choice1 = wrapChoice(choice1, 0, CHARACTER.CHARACTERS.length - 1);
+            choice2 = wrapChoice(choice2, 0, CHARACTER.CHARACTERS.length - 1);
+
             break;
         }
         resetButtons();
     }
 
     public void resetButtons() {
-        for (SelectButtons button : selectButtons) {
+        for (ImageButton button : selectButtons) {
             button.reset();
         }
         startButton.reset();

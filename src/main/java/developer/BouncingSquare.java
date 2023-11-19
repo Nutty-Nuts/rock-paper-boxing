@@ -9,6 +9,7 @@ import java.io.InputStream;
 import javax.imageio.*;
 import java.io.InputStream;
 
+import utils.Loader;
 import utils.Constants.WINDOW;
 
 public class BouncingSquare {
@@ -20,15 +21,8 @@ public class BouncingSquare {
         this.y = y;
         this.xSpeed = (int) (xSpeed * WINDOW.SCALE);
         this.ySpeed = (int) (ySpeed * WINDOW.SCALE);
-        // String image = "dave.jpg";
 
-        InputStream inputStream = BouncingSquare.class.getResourceAsStream("/dave.jpg");
-        try {
-            image = ImageIO.read(inputStream);
-            // image = ImageIO.read(new File("src/main/java/res/dave.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        image = Loader.GetSpriteAtlas(Loader.SOURCE.DAVE);
     }
 
     public void update() {

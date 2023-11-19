@@ -1,29 +1,31 @@
 package gamestates;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 import entities.PlayableCharacter;
 import logic.Logic;
 import main.Game;
-import ui.GoButton;
-import ui.MoveButtons;
-import ui.MoveOverlay;
-import ui.SelectButtons;
-import ui.WinOverlay;
-import utils.Constants.WINDOW;
-import utils.Constants.CHARACTER;
+
+import ui.*;
+import ui.Image;
+
+import utils.Constants.*;
+import utils.Loader.*;
 import utils.Helpers;
 
 public class Playing extends State implements StateMethods {
     private PlayableCharacter player1, player2;
     private MoveOverlay overlay1, overlay2;
     private Rectangle playerRect1, playerRect2, healthP1, healthP2;
-    private MoveButtons[] moveButtons;
-    private GoButton[] goButton;
+    private ImageButton[] moveButtons;
+    private ImageButton goButton;
     private Logic logic;
     private WinOverlay winOverlay;
+
+    private Image playerImage1, playerImage2;
+    private String[] characterSources, characterNames;
+    private int[][] characterPixels;
 
     private boolean hasP1Moved, hasP2Moved, choosing, choosingP1, choosingP2, winP1, winP2;
 
@@ -38,6 +40,8 @@ public class Playing extends State implements StateMethods {
         this.winP1 = false;
         this.winP2 = false;
 
+        this.characterSources = new String[] { SOURCE.CATHYLUS, SOURCE.LOREI, SOURCE.GERARDE, SOURCE.DEB };
+        this.characterPixels = new int[][] { PIXELS.CATHYLUS, PIXELS.LOREI, PIXELS.GERARDE, PIXELS.DEB };
     }
 
     public void initPlayers(int p1, int p2) {
@@ -46,6 +50,9 @@ public class Playing extends State implements StateMethods {
 
         player2 = new PlayableCharacter(CHARACTER.CHARACTER_NAME[p2], CHARACTER.CHARACTERS[p2][0],
                 CHARACTER.CHARACTERS[p2][1], CHARACTER.CHARACTERS[p2][2], CHARACTER.CHARACTERS[p2][3]);
+
+        playerImage1 = new Image(characterSources[p1], 208, 372, characterPixels[p2], 0.1f, true, true);
+        playerImage2 = new Image(characterSources[p2], 1044, 372, characterPixels[p2], 0.1f, true, true);
 
         initClasses();
 
@@ -65,17 +72,16 @@ public class Playing extends State implements StateMethods {
         overlay1 = new MoveOverlay(this, player1);
         overlay2 = new MoveOverlay(this, player2);
 
-        moveButtons = new MoveButtons[2];
+        moveButtons = new ImageButton[2];
 
-        moveButtons[0] = new MoveButtons((int) (64 * 2 * WINDOW.SCALE), (int) (384 * WINDOW.SCALE), "MOVE", "MOVEP1");
-        moveButtons[1] = new MoveButtons(WINDOW.SCALE_WIDTH - (int) (64 * 5 * WINDOW.SCALE),
-                (int) (384 * WINDOW.SCALE), "MOVE", "MOVEP2");
+        moveButtons[0] = new ImageButton(SOURCE.MOVE_BUTTON, 64 * 3 + 10, 480, PIXELS.GO_BUTTON, 2, "MOVEP1", true);
+        moveButtons[1] = new ImageButton(SOURCE.MOVE_BUTTON, WINDOW.SCALE_WIDTH - 64 * 4 + 20, 480, PIXELS.GO_BUTTON, 2,
+                "MOVEP2", true);
 
-        logic = new Logic(player2, player1, this);
+        logic = new Logic(player1, player2, this);
 
-        goButton = new GoButton[1];
-
-        goButton[0] = new GoButton((WINDOW.WIDTH / 2), WINDOW.HEIGHT - 128, "GO", "GO");
+        goButton = new ImageButton(SOURCE.GO_BUTTON, WINDOW.SCALE_X_CENTER, WINDOW.SCALE_HEIGHT - 128,
+                PIXELS.GO_BUTTON, 3, "START", true);
 
         winOverlay = new WinOverlay(this);
     }
@@ -84,11 +90,27 @@ public class Playing extends State implements StateMethods {
     public void update() {
         // TODO Auto-generated method stub
         winOverlay.update();
+        goButton.update();
+
+        for (ImageButton button : moveButtons) {
+            button.update();
+        }
+
+        if (choosing) {
+            if (choosingP1) {
+                overlay1.update();
+            }
+            if (choosingP2) {
+                overlay2.update();
+            }
+        }
     }
 
     @Override
     public void draw(Graphics graphics) {
         graphics.setColor(Color.black);
+        playerImage1.draw(graphics);
+        playerImage2.draw(graphics);
         Helpers.drawCenteredString(graphics, player1.getName(), playerRect1, new Font("Sanserif", Font.BOLD, 16),
                 0);
         Helpers.drawCenteredString(graphics, player2.getName(), playerRect2, new Font("Sanserif", Font.BOLD, 16),
@@ -101,11 +123,11 @@ public class Playing extends State implements StateMethods {
                 new Font("Sanserif", Font.BOLD, 16),
                 0);
 
-        for (MoveButtons buttons : moveButtons) {
+        for (ImageButton buttons : moveButtons) {
             buttons.draw(graphics);
         }
 
-        goButton[0].draw(graphics);
+        goButton.draw(graphics);
 
         if (choosing) {
             if (choosingP1) {
@@ -153,21 +175,15 @@ public class Playing extends State implements StateMethods {
 
     @Override
     public void mousePressed(MouseEvent event) {
-        for (GoButton button : goButton) {
-            if (!isIn(event, button)) {
-                continue;
-            }
+        if (isIn(event, goButton))
             if (hasP1Moved && hasP2Moved) {
-                button.setMousePressed(true);
-                System.out.println("go button pressed");
+                goButton.setMousePressed(true);
             }
-        }
-        for (MoveButtons button : moveButtons) {
+        for (ImageButton button : moveButtons)
             if (isIn(event, button)) {
                 button.setMousePressed(true);
                 System.out.println("move button pressed");
             }
-        }
 
         if (choosing) {
             if (choosingP1) {
@@ -181,20 +197,13 @@ public class Playing extends State implements StateMethods {
 
     @Override
     public void mouseReleased(MouseEvent event) {
-
-        for (GoButton button : goButton) {
-            if (!(isIn(event, button))) {
-                continue;
+        if ((isIn(event, goButton))) {
+            if ((goButton.isMousePressed())) {
+                logic.evaluate();
+                resetRound();
             }
-            if (!(button.isMousePressed())) {
-                continue;
-            }
-            System.out.println("go button released");
-            logic.evaluate();
-            resetRound();
-            System.out.println(hasP1Moved);
         }
-        for (MoveButtons button : moveButtons) {
+        for (ImageButton button : moveButtons) {
             if (!(isIn(event, button))) {
                 continue;
             }
@@ -229,11 +238,10 @@ public class Playing extends State implements StateMethods {
     }
 
     public void resetButtons() {
-        for (MoveButtons button : moveButtons) {
+        for (ImageButton button : moveButtons) {
             button.reset();
         }
-        goButton[0].reset();
-        System.out.println(goButton[0].isMousePressed());
+        goButton.reset();
     }
 
     public void resetRound() {

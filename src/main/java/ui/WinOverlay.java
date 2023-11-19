@@ -1,8 +1,11 @@
 package ui;
 
-import gamestates.Playing;
 import java.awt.*;
+
+import gamestates.Playing;
 import utils.Constants.WINDOW;
+import utils.Loader.PIXELS;
+import utils.Loader.SOURCE;
 import utils.Helpers;
 
 public class WinOverlay {
@@ -10,24 +13,31 @@ public class WinOverlay {
     private String winner;
     private Rectangle boundary;
 
+    private Image p1Wins, p2Wins;
+
     public WinOverlay(Playing playing) {
         this.playing = playing;
         this.boundary = new Rectangle(0, 0, WINDOW.SCALE_WIDTH, WINDOW.SCALE_HEIGHT);
+
+        this.p1Wins = new Image(SOURCE.P1_WINS, WINDOW.SCALE_X_CENTER, WINDOW.SCALE_Y_CENTER, PIXELS.P1_WINS, 7.5f,
+                true,
+                true);
+        this.p2Wins = new Image(SOURCE.P2_WINS, WINDOW.SCALE_X_CENTER, WINDOW.SCALE_Y_CENTER, PIXELS.P2_WINS, 7.5f,
+                true,
+                true);
     }
 
     public void update() {
-        if (playing.isWinP1()) {
-            winner = "Player 1 Wins";
-        }
-        if (playing.isWinP2()) {
-            winner = "Player 2 Wins";
-        }
     }
 
     public void draw(Graphics graphics) {
         graphics.setColor(new Color(0, 0, 0, 150));
         graphics.fillRect(0, 0, WINDOW.SCALE_WIDTH, WINDOW.SCALE_HEIGHT);
-        graphics.setColor(Color.WHITE);
-        Helpers.drawCenteredString(graphics, winner, boundary, new Font("Sanserif", Font.BOLD, 32), 0);
+        if (playing.isWinP1()) {
+            p1Wins.draw(graphics);
+        }
+        if (playing.isWinP2()) {
+            p2Wins.draw(graphics);
+        }
     }
 }
